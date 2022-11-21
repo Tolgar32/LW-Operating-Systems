@@ -39,7 +39,7 @@ public:
 			consumersThreads.push_back(std::thread([&]() {consume(); }));
 		}
 
-
+			
 		while (!(GetAsyncKeyState('Q') & 0x8000)) {
 			if (queue.size() >= 100) pauseProducers = true;
 			if (queue.size() <= 80) pauseProducers = false;
@@ -48,15 +48,15 @@ public:
 		stopProducers = true;
 
 		for (int i = 0; i < producers; i++) {
-			if (producersThreads.at(i).joinable()) producersThreads.at(i).join();
+			if(producersThreads.at(i).joinable()) producersThreads.at(i).join();
 		}
 
 		for (int i = 0; i < consumers; i++) {
 			if (consumersThreads.at(i).joinable()) consumersThreads.at(i).join();
 		}
-
+		
 	}
-
+	
 	~Main() {
 		return;
 	}
@@ -73,9 +73,9 @@ public:
 
 				queue.push(temp);
 
-				std::cout << std::endl << "# Производитель <" << GetCurrentThreadId()
-					<< "> добавил элемент = <" << temp <<
-					">. Размер =  " << queue.size() << std::endl;
+				std::cout << std::endl << "# РџСЂРѕРёР·РІРѕРґРёС‚РµР»СЊ <" << GetCurrentThreadId()
+					<< "> РґРѕР±Р°РІРёР» СЌР»РµРјРµРЅС‚ = <" << temp <<
+					">. Р Р°Р·РјРµСЂ =  " << queue.size() << std::endl;
 
 				ul.unlock();
 
@@ -91,21 +91,21 @@ public:
 		while (true) {
 			if (queue.size() <= 0) return;
 
-			std::unique_lock<std::mutex> ul(mutex);
+				std::unique_lock<std::mutex> ul(mutex);
 
-			SetConsoleTextAttribute(consoleColor, 4);
+				SetConsoleTextAttribute(consoleColor, 4);
 
-			if (!queue.empty())
-				std::cout << std::endl << "@ Потребитель <" << GetCurrentThreadId()
-				<< "> взял элемент = <" << queue.front() <<
-				">. Размер = " << queue.size() - 1 << std::endl;
+				if (!queue.empty())
+				std::cout << std::endl << "@ РџРѕС‚СЂРµР±РёС‚РµР»СЊ <" << GetCurrentThreadId()
+					<< "> РІР·СЏР» СЌР»РµРјРµРЅС‚ = <" << queue.front() <<
+					">. Р Р°Р·РјРµСЂ = " << queue.size() - 1 << std::endl;
 
-			if (!queue.empty()) queue.pop();
+				if(!queue.empty()) queue.pop();
 
-			ul.unlock();
-
+				ul.unlock();
+			
 			Sleep(consumersSleep);
-
+			
 		}
 	}
 
@@ -117,13 +117,13 @@ int main() {
 	SetConsoleOutputCP(1251);
 	SetConsoleTextAttribute(consoleColor, 15);
 
-	std::cout << std::endl << "Нажмите <ENTER>, чтобы запустить программу." << std::endl;
+	std::cout << std::endl << "РќР°Р¶РјРёС‚Рµ <ENTER>, С‡С‚РѕР±С‹ Р·Р°РїСѓСЃС‚РёС‚СЊ РїСЂРѕРіСЂР°РјРјСѓ." << std::endl;
 	while (!(GetAsyncKeyState(VK_RETURN) & 0x8000));
 
 	Main main;
 
 	SetConsoleTextAttribute(consoleColor, 15);
-	std::cout << std::endl << "Нажмите <ENTER>, чтобы закончить программу." << std::endl;
+	std::cout << std::endl << "РќР°Р¶РјРёС‚Рµ <ENTER>, С‡С‚РѕР±С‹ Р·Р°РєРѕРЅС‡РёС‚СЊ РїСЂРѕРіСЂР°РјРјСѓ." << std::endl;
 	while (!(GetAsyncKeyState(VK_RETURN) & 0x8000));
 
 	return 0;
